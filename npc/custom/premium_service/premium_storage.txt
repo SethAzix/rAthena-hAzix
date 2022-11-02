@@ -1,0 +1,86 @@
+
+prontera,153,192,3	script	Premium Storage	4_TREASURE_BOX,{
+	mes .NPCname$;
+	mes "คลังเก็บของสำหรับ";
+	mes "Premium และ VIP เท่านั้น !!";
+	next;
+	switch(select(
+		""+.sb$+" เปิดคลังเก็บของ "+.type1$+"",
+		""+.sb$+" เปิดคลังเก็บของ "+.type2$+""
+	)) {
+		case 1:
+			mes .NPCname$;
+			mes "คลังเก็บของสำหรับ";
+			if (#APACHE_PREMIUM_TIME >= gettimetick(2)) {
+				mes "Premium Service : ^009900ทำงาน";
+				mes "^4169E1สามารถเปิดคลังเพื่อฝากหรือหยิบออกได้ !!^000000";
+			}
+			if (#APACHE_PREMIUM_TIME <= gettimetick(2) || #APACHE_PREMIUM_TIME <= 0) {
+				mes "Premium Service : ^FF0000หมดแล้ว";
+				mes "^FF0000สามารถเปิดคลังเพื่อหยิบออกเท่านั้น !!^000000";
+			}
+			mes "ต้องการเปิดคลังหรือไม่?";
+			switch(select(
+				""+.sb$+" เปิดคลังเก็บของ",
+				""+.sb$+" ยกเลิก"
+			)) {
+				case 1:
+					if (#APACHE_PREMIUM_TIME <= gettimetick(2) || #APACHE_PREMIUM_TIME <= 0) {
+						close2;
+						openstorage2 .sid[0],STOR_MODE_GET;
+					}
+					if (#APACHE_PREMIUM_TIME >= gettimetick(2)) {
+						close2;
+						openstorage2 .sid[0],STOR_MODE_GET|STOR_MODE_PUT;
+					}
+					end;
+					
+				case 2: end;
+			}
+	
+		case 2:
+			mes .NPCname$;
+			mes "คลังเก็บของสำหรับ";
+			if (vip_status(VIP_STATUS_ACTIVE)) {
+				mes "VIP Service : ^009900ทำงาน";
+				mes "^4169E1สามารถเปิดคลังเพื่อฝากหรือหยิบออกได้ !!^000000";
+			}
+			if (!vip_status(VIP_STATUS_EXPIRE)) {
+				mes "VIP Service : ^FF0000หมดแล้ว";
+				mes "^FF0000สามารถเปิดคลังเพื่อหยิบออกเท่านั้น !!^000000";
+			}
+			mes "ต้องการเปิดคลังหรือไม่?";
+			switch(select(
+				""+.sb$+" เปิดคลังเก็บของ",
+				""+.sb$+" ยกเลิก"
+			)) {
+				case 1:
+					if (!vip_status(VIP_STATUS_EXPIRE)) {
+						close2;
+						openstorage2 .sid[1],STOR_MODE_GET;
+					}
+					if (vip_status(VIP_STATUS_ACTIVE)) {
+						close2;
+						openstorage2 .sid[1],STOR_MODE_GET|STOR_MODE_PUT;
+					}
+					end;
+					
+				case 2: end;
+			}
+	}
+	end;
+	
+OnInit:
+	.NPCname$  = "[^0000FF "+strnpcinfo(1)+" ^000000]";
+	.sb$ = "~";
+	.type1$ = "^009900Premium^000000";
+	.type2$ = "^0000FFVIP^000000";
+	setarray .sid,1,2;
+	end;
+}
+
+//prontera,153,192,3	duplicate(Premium Storage)	Premium Storage#prt_cen	4_TREASURE_BOX
+prontera,41,210,6	duplicate(Premium Storage)	Premium Storage#prt_left	4_TREASURE_BOX
+prontera,270,210,3	duplicate(Premium Storage)	Premium Storage#prt_right	4_TREASURE_BOX
+prontera,144,89,6	duplicate(Premium Storage)	Premium Storage#prt_bot	4_TREASURE_BOX
+prontera,167,326,3	duplicate(Premium Storage)	Premium Storage#prt_top	4_TREASURE_BOX
